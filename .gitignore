@@ -1,4 +1,5 @@
 .terraform/
+.terraform-plugin-cache/
 .terraform.lock.hcl
 *.tfstate
 *.tfstate.*
