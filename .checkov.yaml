@@ -1,0 +1,10 @@
+# Checkov runs in CI without cloud credentials. Skips below are platform
+# limits, not missing controls. Each one is also noted in the README.
+framework:
+  - terraform
+quiet: true
+compact: true
+skip-check:
+  # S3 MFA delete can only be enabled by the account root with a hardware
+  # MFA device. Terraform cannot set it.
+  - CKV_AWS_52
