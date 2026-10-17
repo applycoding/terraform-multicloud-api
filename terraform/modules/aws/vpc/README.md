@@ -15,7 +15,7 @@ Application VPC for the portfolio demo.
 | --- | --- | --- | --- |
 | `name` | string |  | Lowercase prefix. |
 | `cidr_block` | string |  | VPC CIDR. |
-| `az_count` | number | `2` | Availability zones, 2 or 3. |
+| `availability_zones` | list(string) |  | Two or three pinned zone names. |
 | `single_nat_gateway` | bool | `true` | Share one NAT gateway. |
 | `tags` | map(string) | `{}` | Extra tags. |
 

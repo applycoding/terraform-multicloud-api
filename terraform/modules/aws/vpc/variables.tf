@@ -18,14 +18,13 @@ variable "cidr_block" {
   }
 }
 
-variable "az_count" {
-  description = "Number of availability zones to use. Two is the minimum so a load balancer and a Multi-AZ database both have a second subnet."
-  type        = number
-  default     = 2
+variable "availability_zones" {
+  description = "Availability zone names, in subnet order. Names are pinned so a newly announced zone cannot change the layout."
+  type        = list(string)
 
   validation {
-    condition     = var.az_count >= 2 && var.az_count <= 3
-    error_message = "az_count must be 2 or 3."
+    condition     = length(var.availability_zones) >= 2 && length(var.availability_zones) <= 3
+    error_message = "Provide two or three availability zone names."
   }
 }
 

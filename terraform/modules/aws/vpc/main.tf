@@ -1,14 +1,5 @@
-data "aws_availability_zones" "available" {
-  state = "available"
-
-  filter {
-    name   = "opt-in-status"
-    values = ["opt-in-not-required"]
-  }
-}
-
 locals {
-  azs     = slice(data.aws_availability_zones.available.names, 0, var.az_count)
+  azs     = var.availability_zones
   nat_azs = var.single_nat_gateway ? [local.azs[0]] : local.azs
 }
 
@@ -31,7 +22,7 @@ resource "aws_internet_gateway" "this" {
 }
 
 resource "aws_subnet" "public" {
-  count = var.az_count
+  count = length(local.azs)
 
   vpc_id                  = aws_vpc.this.id
   availability_zone       = local.azs[count.index]
@@ -41,11 +32,11 @@ resource "aws_subnet" "public" {
 }
 
 resource "aws_subnet" "private" {
-  count = var.az_count
+  count = length(local.azs)
 
   vpc_id                  = aws_vpc.this.id
   availability_zone       = local.azs[count.index]
-  cidr_block              = cidrsubnet(var.cidr_block, 4, count.index + var.az_count)
+  cidr_block              = cidrsubnet(var.cidr_block, 4, count.index + length(local.azs))
   map_public_ip_on_launch = false
   tags                    = merge(var.tags, { Name = "${var.name}-private-${local.azs[count.index]}" })
 }
@@ -62,7 +53,7 @@ resource "aws_route" "public_default" {
 }
 
 resource "aws_route_table_association" "public" {
-  count = var.az_count
+  count = length(local.azs)
 
   subnet_id      = aws_subnet.public[count.index].id
   route_table_id = aws_route_table.public.id
@@ -86,14 +77,14 @@ resource "aws_nat_gateway" "this" {
 }
 
 resource "aws_route_table" "private" {
-  count = var.az_count
+  count = length(local.azs)
 
   vpc_id = aws_vpc.this.id
   tags   = merge(var.tags, { Name = "${var.name}-private-${local.azs[count.index]}" })
 }
 
 resource "aws_route" "private_default" {
-  count = var.az_count
+  count = length(local.azs)
 
   route_table_id         = aws_route_table.private[count.index].id
   destination_cidr_block = "0.0.0.0/0"
@@ -101,7 +92,7 @@ resource "aws_route" "private_default" {
 }
 
 resource "aws_route_table_association" "private" {
-  count = var.az_count
+  count = length(local.azs)
 
   subnet_id      = aws_subnet.private[count.index].id
   route_table_id = aws_route_table.private[count.index].id

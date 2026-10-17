@@ -3,7 +3,8 @@
 Regional secret for the application database URL.
 
 - The replica uses a customer managed key.
-- A Pub/Sub topic receives rotation notifications every 30 days. This module does not add a secret version and does not implement the rotator.
+- A Pub/Sub topic receives rotation notifications every 30 days. The topic is encrypted with the same customer managed key and only persists messages in the secret's region. This module does not add a secret version and does not implement the rotator.
+- The key has `prevent_destroy` set. Remove that lifecycle block before destroying the key.
 - Add the first version with `gcloud secrets versions add` so the value stays out of Terraform state.
 
 `next_rotation_time` defaults to `2027-01-01T00:00:00Z`. Change it if that timestamp is no longer in the future.

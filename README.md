@@ -148,7 +148,7 @@ Invoker IAM stays on. Add a member to `invoker_members` when you want to call th
 
 ### Destroy
 
-Load balancer deletion protection, RDS deletion protection, Cloud SQL deletion protection, and Cloud Run deletion protection are literals in the modules so the security scan can see them. A sandbox destroy needs those set to false, then another apply, then destroy. RDS also keeps a final snapshot. Secrets Manager keeps the application secret for 30 days after delete. KMS keys wait 30 days. S3 log buckets set `force_destroy` so a demo bucket can be removed with its objects.
+Load balancer deletion protection, RDS deletion protection, Cloud SQL deletion protection, Cloud Run deletion protection, and `prevent_destroy` on the GCP KMS keys are literals in the modules so the security scan can see them. A sandbox destroy needs those set to false, then another apply, then destroy. RDS also keeps a final snapshot. Secrets Manager keeps the application secret for 30 days after delete. KMS keys wait 30 days. S3 log buckets set `force_destroy` so a demo bucket can be removed with its objects.
 
 ## Cost notes
 
@@ -205,6 +205,7 @@ No cloud credentials are used. `terraform apply` is not a CI step.
 | `CKV_AWS_378` | target group | TLS terminates at the load balancer. Tasks speak HTTP on a private subnet. |
 | `CKV_AWS_109`, `CKV_AWS_111`, `CKV_AWS_356` | CMK policies and the TLS deny on the log buckets | Key policies need an account-root administration statement, and KMS policies use `Resource *`. The bucket statement is a deny of non-TLS requests. |
 | `CKV2_AWS_5` | default security group | The default group is locked and intentionally unused. |
+| `CKV2_AWS_28` | public load balancer | A WAFv2 web ACL is the next control for a public listener. TLS, header dropping, and access logs are already on. |
 
 ## What you would still do in a real account
 

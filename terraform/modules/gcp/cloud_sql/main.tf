@@ -15,6 +15,10 @@ resource "google_kms_crypto_key" "sql" {
   purpose         = "ENCRYPT_DECRYPT"
 
   labels = var.labels
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 resource "google_kms_crypto_key_iam_member" "sql" {

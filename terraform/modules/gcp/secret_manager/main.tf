@@ -15,6 +15,10 @@ resource "google_kms_crypto_key" "secrets" {
   purpose         = "ENCRYPT_DECRYPT"
 
   labels = var.labels
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 resource "google_kms_crypto_key_iam_member" "secrets" {
@@ -23,10 +27,23 @@ resource "google_kms_crypto_key_iam_member" "secrets" {
   member        = "serviceAccount:service-${data.google_project.current.number}@gcp-sa-secretmanager.iam.gserviceaccount.com"
 }
 
+resource "google_kms_crypto_key_iam_member" "pubsub" {
+  crypto_key_id = google_kms_crypto_key.secrets.id
+  role          = "roles/cloudkms.cryptoKeyEncrypterDecrypter"
+  member        = "serviceAccount:service-${data.google_project.current.number}@gcp-sa-pubsub.iam.gserviceaccount.com"
+}
+
 resource "google_pubsub_topic" "rotation" {
-  project = var.project_id
-  name    = "${var.secret_id}-rotation"
-  labels  = var.labels
+  project      = var.project_id
+  name         = "${var.secret_id}-rotation"
+  kms_key_name = google_kms_crypto_key.secrets.id
+  labels       = var.labels
+
+  message_storage_policy {
+    allowed_persistence_regions = [var.region]
+  }
+
+  depends_on = [google_kms_crypto_key_iam_member.pubsub]
 }
 
 resource "google_secret_manager_secret" "app" {

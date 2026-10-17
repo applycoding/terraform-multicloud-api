@@ -15,6 +15,7 @@ resource "aws_vpc_security_group_ingress_rule" "https" {
 }
 
 resource "aws_lb" "this" {
+  #checkov:skip=CKV2_AWS_28:A public demo listener stops at TLS, header dropping, and access logs. Add a WAFv2 web ACL before exposing this to untrusted traffic.
   name                       = "${var.name}-alb"
   load_balancer_type         = "application"
   internal                   = false
