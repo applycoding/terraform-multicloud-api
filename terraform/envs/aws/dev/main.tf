@@ -18,7 +18,7 @@ module "platform" {
   name                        = "portfolio-${var.environment}"
   environment                 = var.environment
   vpc_cidr                    = var.vpc_cidr
-  az_count                    = var.az_count
+  availability_zones          = var.availability_zones
   single_nat_gateway          = var.single_nat_gateway
   certificate_arn             = var.certificate_arn
   container_image             = var.container_image

@@ -19,10 +19,9 @@ variable "vpc_cidr" {
   type        = string
 }
 
-variable "az_count" {
-  description = "Number of availability zones."
-  type        = number
-  default     = 2
+variable "availability_zones" {
+  description = "Pinned availability zone names. Two or three names in this region."
+  type        = list(string)
 }
 
 variable "single_nat_gateway" {

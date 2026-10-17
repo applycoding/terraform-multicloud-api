@@ -7,7 +7,7 @@ Private Postgres 18 on Cloud SQL Enterprise edition.
 - Regional availability, backups, point-in-time recovery, and a 100 GB autoresize cap.
 - CMEK on the data disk. The Cloud SQL service agent receives encrypter/decrypter on that key.
 - IAM database authentication is enabled. The stack creates the Cloud Run database user.
-- Deletion protection is on in Terraform and in the Cloud SQL API.
+- Deletion protection is on in Terraform and in the Cloud SQL API. The CMEK also has `prevent_destroy` set.
 - Postgres logging flags follow the usual audit baseline, including pgAudit.
 
 Pass `private_service_connection` from the network module so the instance is not created before peering exists.
