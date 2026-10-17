@@ -1,0 +1,10 @@
+environment             = "dev"
+project_id              = "replace-me-portfolio-dev"
+region                  = "us-central1"
+subnet_cidr             = "10.40.0.0/20"
+private_service_address = "10.80.0.0"
+database_tier           = "db-custom-1-3840"
+min_instance_count      = 0
+max_instance_count      = 2
+image                   = "us-central1-docker.pkg.dev/replace-me-portfolio-dev/portfolio/api:0.1.0"
+invoker_members         = []
